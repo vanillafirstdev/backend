@@ -1,0 +1,2 @@
+# Never served to a browser. Belt and braces behind the root .htaccess.
+Require all denied

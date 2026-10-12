@@ -1,0 +1,77 @@
+### requests.http — every endpoint, ready to send.
+###
+### VS Code: install the "REST Client" extension, then click "Send Request"
+### above any request. PhpStorm and other JetBrains IDEs run this file natively.
+### Each request is separated by ###. Change @base if you serve the API elsewhere,
+### e.g. http://localhost/backend-kit on XAMPP.
+
+@base = http://localhost:8000
+
+### The API map
+GET {{base}}/
+
+### List every bookmark
+GET {{base}}/api/bookmarks
+
+### One bookmark
+GET {{base}}/api/bookmarks/1
+
+### Create one: expect 201 Created and a Location header
+POST {{base}}/api/bookmarks
+Content-Type: application/json
+
+{
+  "title": "HTTP status codes",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status",
+  "note": "Every code this API returns is in here"
+}
+
+### Change only the note: expect 200 and the updated bookmark
+PATCH {{base}}/api/bookmarks/1
+Content-Type: application/json
+
+{
+  "note": "Changed with PATCH"
+}
+
+### Delete one: expect 204 No Content, then 404 if you send it again
+DELETE {{base}}/api/bookmarks/2
+
+### ---- Requests that should fail, and why ----
+
+### 422: fields fail validation (and javascript: is refused)
+POST {{base}}/api/bookmarks
+Content-Type: application/json
+
+{
+  "title": "",
+  "url": "javascript:alert(1)",
+  "note": 42
+}
+
+### 400: not valid JSON (trailing comma)
+POST {{base}}/api/bookmarks
+Content-Type: application/json
+
+{ "title": "Broken", }
+
+### 415: right data, wrong Content-Type (this is how an HTML form sends)
+POST {{base}}/api/bookmarks
+Content-Type: application/x-www-form-urlencoded
+
+title=Form&url=https://example.com
+
+### 404: no such bookmark
+GET {{base}}/api/bookmarks/99999
+
+### 405: the address exists, the method doesn't. Read the Allow header.
+PUT {{base}}/api/bookmarks/1
+Content-Type: application/json
+
+{}
+
+### CORS preflight, as a browser at http://localhost:5500 would send it
+OPTIONS {{base}}/api/bookmarks
+Origin: http://localhost:5500
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: content-type

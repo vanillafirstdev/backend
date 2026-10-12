@@ -1,0 +1,5 @@
+# Created on first run from database/schema.sql.
+storage/database/*.sqlite
+storage/database/*.sqlite-wal
+storage/database/*.sqlite-shm
+storage/logs/*.log

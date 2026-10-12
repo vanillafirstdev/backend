@@ -1,0 +1,20 @@
+# .htaccess (project root) — for hosts where you can't change the web root.
+#
+# Best practice: point the domain's document root at public/, and this file
+# is never used. If you can't (some shared hosts, or XAMPP at
+# http://localhost/my-app/), this routes every request into public/, so
+# app/, database/ and storage/ can never be fetched by a browser.
+# Needs Apache with mod_rewrite and AllowOverride All (XAMPP's default).
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^public/ - [L]
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# No mod_rewrite? Refuse everything rather than expose private folders.
+<IfModule !mod_rewrite.c>
+    Require all denied
+</IfModule>
